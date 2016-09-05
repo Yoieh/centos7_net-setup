@@ -4,7 +4,7 @@ Quick and dirty but handy network setup skript in bash for centOS 7 that i made 
 
 ## run:
 
-`# net-setup.sh`
+`# bash ./net-setup.sh`
 
 This will display all flags available.
 
@@ -25,7 +25,7 @@ Example if ip address is *192.168.1.10* it will defult to *192.168.1.1*.
 
 ## example 1
 
-`# net-setup.sh -n web01 -i 192.168.1.80`
+`# bash ./net-setup.sh -n web01 -i 192.168.1.80`
 
 Will resulte with a inteface file that look like this.
 
