@@ -27,7 +27,15 @@ function flag_case {
 			mainArray[DNS2]=${arg}
 			;;
 		"-h")
-			printf "Help!\n -n Set Hostname\n -i Set Static IPaddress\n -f Set Interface\n -g Set gateway\n -d1 Set DNS1\n -d2 Set DNS2"
+			printf "%s%s\n%s%s%s%s\n%s%s%s%s\n%s%s%s%s\n%s%s%s%s\n%s%s%s%s\ns%s%s%s\n" \
+				"yc[YE_B]" "Help!" \
+				"yc[YE_B]" "-n  " "yc[YE]" "Set Hostname\n" \
+				"yc[YE_B]" "-i  " "yc[YE]" "Set Static IPaddress\n"\
+				"yc[YE_B]" "-f  " "yc[YE]" "Set Interface\n"\
+		       		"yc[YE_B]" "-g  " "yc[YE]" "Set gateway\n"\
+				"yc[YE_B]" "-d1 " "yc[YE]" "Set DNS1\n"\
+				"yc[YE_B]" "-d2 " "yc[YE]" "Set DNS2"\
+				"yc[RESET]"
 			exit 0
 			;;
 	esac
