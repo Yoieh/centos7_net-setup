@@ -24,6 +24,18 @@ function flag_case {
 		"-g")
 			mainArray[GATEWAY]=${arg}
 			;;
+		"-d")
+			mainArray[DOMAIN]=${arg}
+			;;
+		"-di")
+			mainArray[HOSTS_IPADDRESS]=${arg}
+			;;
+		"-dh")
+			mainArray[HOSTS_HOSTNAME]=${arg}
+			;;
+		"-da")
+			mainArray[HOSTS_ALIAS]=${arg}
+			;;
 		"-d1")
 			mainArray[DNS1]=${arg}
 			;;
@@ -31,14 +43,18 @@ function flag_case {
 			mainArray[DNS2]=${arg}
 			;;
 		"-h")
-			printf "%s%s\n%s%s%s%s\n%s%s%s%s\n%s%s%s%s\n%s%s%s%s\n%s%s%s%s\ns%s%s%s\n%s\n" \
+			printf "%s%s\n%s%s%s%s\n%s%s%s%s\n%s%s%s%s\n%s%s%s%s\n%s%s%s%s\n%s%s%s%s\n%s%s%s%s\n%s%s%s%s\n%s%s%s%s\n%s%s%s%s\n%s\n" \
 				"${yc[YE_B]}" "Help!" \
-				"${yc[YE_B]}" "-n  " "${yc[YE]}" "Set Hostname" \
-				"${yc[YE_B]}" "-i  " "${yc[YE]}" "Set Static IPaddress"\
-				"${yc[YE_B]}" "-f  " "${yc[YE]}" "Set Interface"\
-		       	"${yc[YE_B]}" "-g  " "${yc[YE]}" "Set gateway"\
-				"${yc[YE_B]}" "-d1 " "${yc[YE]}" "Set DNS1"\
-				"${yc[YE_B]}" "-d2 " "${yc[YE]}" "Set DNS2"\
+				"${yc[YE_B]}" "-n  ${yc[RESET]}" "${yc[YE]}" "Set Hostname" \
+				"${yc[YE_B]}" "-i  ${yc[RESET]}" "${yc[YE]}" "Set Static IPaddress"\
+				"${yc[YE_B]}" "-f  ${yc[RESET]}" "${yc[YE]}" "Set Interface"\
+		       	"${yc[YE_B]}" "-g  ${yc[RESET]}" "${yc[YE]}" "Set Gateway"\
+				"${yc[YE_B]}" "-d  ${yc[RESET]}" "${yc[YE]}" "Set Domain used in /etc/hosts"\
+				"${yc[YE_B]}" "-d1 ${yc[RESET]}" "${yc[YE]}" "Set DNS1"\
+				"${yc[YE_B]}" "-d2 ${yc[RESET]}" "${yc[YE]}" "Set DNS2"\
+				"${yc[YE_B]}" "-di ${yc[RESET]}" "${yc[YE]}" "Set Ipaddress in hosts"\
+				"${yc[YE_B]}" "-dh ${yc[RESET]}" "${yc[YE]}" "Set Hostname in hosts"\
+				"${yc[YE_B]}" "-da ${yc[RESET]}" "${yc[YE]}" "Set Alias in hosts"\
 				"${yc[RESET]}"
 			exit 0
 			;;
@@ -63,6 +79,7 @@ for arg in $@; do
 		flag_case ${flag} ${argIn}
 	else
 		flag=${arg}
+		flag_case ${flag}
 	fi
 
 	argNum=$(( ${argNum} + 1))
@@ -71,12 +88,12 @@ done
 # Print all in mainArray
 for i in "${!mainArray[@]}"; do
 	printf "%s%s%s = %s%s\n%s"\
-			"${yc[YE_B]}" "${i}" "${yc[YE]}"\
+			"${yc[YE_B]}" "${i}" "${yc[RESET]}${yc[YE]}"\
 			"${yc[YE_B]}" "${mainArray[$i]}"\
 			"${yc[RESET]}"
 done
 
-
+# Set hostname /etc/hostname
 if [ ${mainArray[HOSTNAME]} ]; then
 	sudo echo "${mainArray[HOSTNAME]}" > /etc/hostname
 	if [ $? -eq 0 ]; then
@@ -88,6 +105,28 @@ if [ ${mainArray[HOSTNAME]} ]; then
 		printf "%sError: Cant change hostname!\n Code: %s%s%s"\
 				"${yc[RE]}"\
 				"${yc[RE_B]}" "$?"\
+				"${yc[RESET]}"
+	fi
+fi
+
+
+# Add domain to /etc/hosts
+if [[ ${mainArray[IPADDRESS]} && ${mainArray[HOSTNAME]} && ${mainArray[DOMAIN]} ]]; then
+	hosts="${mainArray[IPADDRESS]} ${mainArray[HOSTNAME]}.${mainArray[DOMAIN]} ${mainArray[HOSTNAME]}"
+	sudo echo "${hosts}" >> /etc/hosts
+	if [ $? -eq 0 ]; then
+		printf "%sHost %s%s%s added to host.%s\n"\
+				"${yc[GR]}"\
+				"${yc[GR_B]}" "${hosts}" "${yc[RESET]}${yc[GR]}"\
+				"${yc[RESET]}"
+	fi
+elif [[ ${mainArray[HOSTS_IPADDRESS]} && ${mainArray[HOSTS_HOSTNAME]} && ${mainArray[HOSTS_ALIAS]} ]]; then
+	hosts="${mainArray[HOSTS_IPADDRESS]} ${mainArray[HOSTS_HOSTNAME]} ${mainArray[HOSTS_ALIAS]}"
+	sudo echo "${hosts}" >> /etc/hosts
+	if [ $? -eq 0 ]; then
+		printf "%sHost %s%s%s added to host.%s\n"\
+				"${yc[GR]}"\
+				"${yc[GR_B]}" "${hosts}" "${yc[RESET]}${yc[GR]}"\
 				"${yc[RESET]}"
 	fi
 fi
@@ -125,46 +164,35 @@ if [ ${mainArray[IPADDRESS]} ]; then
 	if [ $? -eq 0 ]; then
 		printf "%sIP %s%s%s set on interface %s%s%s.%s\n"\
 				"${yc[GR]}"\
-				"${yc[GR_B]}" "${ipaddress} "${yc[GR]}""\
-				"${yc[GR_B]}" "${interface} "${yc[GR]}""\
+				"${yc[GR_B]}" "${ipaddress} "${yc[RESET]}${yc[GR]}""\
+				"${yc[GR_B]}" "${interface} "${yc[RESET]}${yc[GR]}""\
 				"${yc[RESET]}"
 
 		printf "%sGATEWAY %s%s%s set on interface %s%s%s.%s\n"\
 				"${yc[GR]}"\
-				"${yc[GR_B]}" "${gateway} "${yc[GR]}""\
-				"${yc[GR_B]}" "${interface} "${yc[GR]}""\
+				"${yc[GR_B]}" "${gateway} "${yc[RESET]}${yc[GR]}""\
+				"${yc[GR_B]}" "${interface} "${yc[RESET]}${yc[GR]}""\
 				"${yc[RESET]}"
 
 		printf "%sDNS1 %s%s%s set on interface %s%s%s.%s\n"\
 				"${yc[GR]}"\
-				"${yc[GR_B]}" "${dns1} "${yc[GR]}""\
-				"${yc[GR_B]}" "${interface} "${yc[GR]}""\
+				"${yc[GR_B]}" "${dns1} "${yc[RESET]}${yc[GR]}""\
+				"${yc[GR_B]}" "${interface} "${yc[RESET]}${yc[GR]}""\
 				"${yc[RESET]}"
 
 		printf "%sDNS2 %s%s%s set on interface %s%s%s.%s\n"\
 				"${yc[GR]}"\
-				"${yc[GR_B]}" "${dns2}" "${yc[GR]}"\
-				"${yc[GR_B]}" "${interface}" "${yc[GR]}"\
+				"${yc[GR_B]}" "${dns2}" "${yc[RESET]}${yc[GR]}"\
+				"${yc[GR_B]}" "${interface}" "${yc[RESET]}${yc[GR]}"\
 				"${yc[RESET]}"
 	else
 		printf "%sError: \nIP %s%s%s on Interface %s%s%s could not be sett. \nCode: %s%s%s\n"\
 				"${yc[RE]}"\
-				"${yc[RE_B]}" "${ipaddress}" "${yc[RESET]}"\
-				"${yc[RE_B]}" "${interface}" "${yc[RESET]}"\
+				"${yc[RE_B]}" "${ipaddress}" "${yc[RESET]}${yc[RE]}"\
+				"${yc[RE_B]}" "${interface}" "${yc[RESET]}${yc[RE]}"\
 				"${yc[RE_B]}" "$?"\
 				"${yc[RESET]}"
 	fi
 fi
-
-printf "\n\n\n"
-printf "%s%s\n%s%s%s%s\n%s%s%s%s\n%s%s%s%s\n%s%s%s%s\n%s%s%s%s\n%s%s%s%s\n%s\n"\
-		"${yc[YE_B]}" "Help!" \
-		"${yc[YE_B]}" "-n  " "${yc[YE]}" "Set Hostname" \
-		"${yc[YE_B]}" "-i  " "${yc[YE]}" "Set Static IPaddress"\
-		"${yc[YE_B]}" "-f  " "${yc[YE]}" "Set Interface"\
-	   	"${yc[YE_B]}" "-g  " "${yc[YE]}" "Set gateway"\
-		"${yc[YE_B]}" "-d1 " "${yc[YE]}" "Set DNS1"\
-		"${yc[YE_B]}" "-d2 " "${yc[YE]}" "Set DNS2"\
-		"${yc[RESET]}"
 
 exit 0
