@@ -4,7 +4,19 @@ Quick and dirty but handy network setup skript in bash for centOS 7 that i made 
 
 ## run:
 
-`# bash ./net-setup.sh`
+`# bash ./centos7_net-setup/net-setup.sh -h`
+
+or
+
+`# ./centos7_net-setup/net-setup.sh -h`
+
+if the .sh file is executable else run:
+
+`# chmod +x ./centos7_net-setup/net-setup.sh`
+
+then:
+
+`# ./centos7_net-setup/net-setup-sh -h`
 
 This will display all flags available.
 
