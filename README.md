@@ -10,7 +10,7 @@ This will display all flags available.
 
 `-n HOSTNAME` to set your hostname this is optional!
 
-`-i IPADDRESS` to set your ip address. Just juse if you want to over wright your */etc/sysconfig/network-scripts/ifcfg-eth**
+`-i IPADDRESS` to set your ip address. Just juse if you want to over wright your */etc/sysconfig/network-scripts/ifcfg-eth*
 
 `-f INTERFACE` to set the interface the address will be sett on. Will defult to *eth0*
 
@@ -25,7 +25,7 @@ Example if ip address is *192.168.1.10* it will defult to *192.168.1.1*.
 
 `-d2 DNSADDRESS` to set DNS2, will defult to googles free DNS2 *8.8.4.4*
 
-Use only this flags below if you just want to add a new host in */etc/hosts*. If you just want to change the local host when setting up network, use *-d* for DOMAIN, *-n* for HOSTNAME, *-i* for IPADDRESS. **Remeber when you use *-i* it will overwright */etc/sysconfig/network-scripts/ifcfg-eth***. If you dont want to reset the */etc/sysconfig/network-scripts/ifcfg-eth** juse the flags below.
+Use only this flags below if you just want to add a new host in */etc/hosts*. If you just want to change the local host when setting up network, use *-d* for DOMAIN, *-n* for HOSTNAME, *-i* for IPADDRESS. **Remeber when you use -i it will overwright /etc/sysconfig/network-scripts/ifcfg-eth**. If you dont want to reset the */etc/sysconfig/network-scripts/ifcfg-eth* juse the flags below.
 
 `-di IPADDRESS` to set ipaddress in */etc/hosts*
 
